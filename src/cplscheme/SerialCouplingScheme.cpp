@@ -188,6 +188,7 @@ void SerialCouplingScheme::advance()
       }
       setComputedTimestepPart(0.0);
     }
+    applyTimeinterpolation();
   }
   else if (_couplingMode == Implicit) {
     bool convergence = true;

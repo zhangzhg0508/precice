@@ -872,5 +872,15 @@ bool BaseCouplingScheme::maxIterationsReached()
     return _iterationsCoarseOptimization == _maxIterations;
   }
 }
+
+void BaseCouplingScheme::applyTimeinterpolation()
+{
+  TRACE(_computedTimestepPart);
+  for (DataMap::value_type &pair : _receiveData) {
+    Eigen::VectorXd &values     = *pair.second->values;
+    const Eigen::VectorXd &valuesOld = pair.second->oldValues.col(1);
+    //_timeInterpolation.apply(values, valuesOld, _computedTimestepPart);
+  }
+}
 }
 } // namespace precice, cplscheme

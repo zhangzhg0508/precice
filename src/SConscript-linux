@@ -76,6 +76,10 @@ sourcesUtils = [
     Glob('utils/*.cpp'),
 ]
 
+sourcesTime = [
+    Glob('time/*.cpp'),
+]
+
 sourcesXml = [
     Glob('xml/*.cpp'),
 ]
@@ -93,6 +97,7 @@ sourcesAllNoMain = [
     sourcesPartition,
     sourcesPrecice,
     sourcesQuery,
+    sourcesTime,
     sourcesUtils,
     sourcesXml,
 ]

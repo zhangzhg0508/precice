@@ -494,6 +494,8 @@ protected:
 
   bool maxIterationsReached();
 
+  void applyTimeinterpolation();
+
   /// Smallest number, taking validDigists into account: eps = std::pow(10.0, -1 * validDigits)
   const double _eps;
 
