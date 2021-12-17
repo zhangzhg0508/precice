@@ -2834,7 +2834,11 @@ void testQuadMappingNearestProjectionTallKite(bool defineEdgesExplicitly, const 
 
     auto &mesh = testing::WhiteboxAccessor::impl(cplInterface).mesh("MeshOne");
     BOOST_REQUIRE(mesh.vertices().size() == 4);
-    BOOST_REQUIRE(mesh.edges().size() == 5);
+    if (defineEdgesExplicitly) {
+      BOOST_REQUIRE(mesh.edges().size() == 4);
+    } else {
+      BOOST_REQUIRE(mesh.edges().empty());
+    }
     BOOST_REQUIRE(mesh.triangles().size() == 2);
 
     for (auto &edge : mesh.edges()) {
@@ -2883,8 +2887,13 @@ void testQuadMappingNearestProjectionWideKite(bool defineEdgesExplicitly, const 
 
     auto &mesh = testing::WhiteboxAccessor::impl(cplInterface).mesh("MeshOne");
     BOOST_REQUIRE(mesh.vertices().size() == 4);
-    BOOST_REQUIRE(mesh.edges().size() == 5);
     BOOST_REQUIRE(mesh.triangles().size() == 2);
+    if (defineEdgesExplicitly) {
+      BOOST_REQUIRE(mesh.edges().size() == 4);
+    } else {
+      BOOST_REQUIRE(mesh.edges().empty());
+    }
+
 
     for (auto &edge : mesh.edges()) {
       BOOST_TEST(mesh::edgeLength(edge) < 0.6);
@@ -2912,7 +2921,7 @@ void testQuadMappingNearestProjection(bool defineEdgesExplicitly, const std::str
 
   // MeshTwo
   Vector3d coordTwoA{0.0, 0.0, z + 0.1};               // Maps to vertex A
-  Vector3d coordTwoB{0.0, 0.5, z - 0.01};              // Maps to edge AD
+  Vector3d coordTwoB{0.0, 0.5, z - 0.01};              // Maps to edge AD TODO this now fails
   Vector3d coordTwoC{2.0 / 3.0, 1.0 / 3.0, z + 0.001}; // Maps to triangle ABC
   // This corresponds to the point C from mesh two on the triangle ABC on mesh one.
   Vector3d barycenterABC{0.3798734633239789, 0.24025307335204216, 0.3798734633239789};
@@ -2946,7 +2955,11 @@ void testQuadMappingNearestProjection(bool defineEdgesExplicitly, const std::str
 
     auto &mesh = testing::WhiteboxAccessor::impl(cplInterface).mesh("MeshOne");
     BOOST_REQUIRE(mesh.vertices().size() == 4);
-    BOOST_REQUIRE(mesh.edges().size() == 5);
+    if (defineEdgesExplicitly) {
+      BOOST_REQUIRE(mesh.edges().size() == 4);
+    } else {
+      BOOST_REQUIRE(mesh.edges().empty());
+    }
     BOOST_REQUIRE(mesh.triangles().size() == 2);
 
     // Initialize, thus sending the mesh.
@@ -3544,7 +3557,7 @@ void testQuadMappingScaledConsistent(const std::string configFile, const TestCon
 
     auto &mesh = testing::WhiteboxAccessor::impl(cplInterface).mesh("MeshOne");
     BOOST_REQUIRE(mesh.vertices().size() == 4);
-    BOOST_REQUIRE(mesh.edges().size() == 5);
+    BOOST_REQUIRE(mesh.edges().size() == 4);
     BOOST_REQUIRE(mesh.triangles().size() == 2);
 
     // Initialize, thus sending the mesh.
