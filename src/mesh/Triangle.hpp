@@ -47,9 +47,9 @@ public:
       TriangleID id);
 
   Triangle(
-      Vertex &     vertexOne,
-      Vertex &     vertexTwo,
-      Vertex &     vertexThree,
+      Vertex &   vertexOne,
+      Vertex &   vertexTwo,
+      Vertex &   vertexThree,
       TriangleID id);
 
   /// Returns dimensionalty of space the triangle is embedded in.

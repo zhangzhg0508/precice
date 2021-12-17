@@ -45,7 +45,7 @@ Triangle::Triangle(
                  edgeOne.getDimensions(), edgeTwo.getDimensions());
   PRECICE_ASSERT(edgeTwo.getDimensions() == edgeThree.getDimensions(),
                  edgeTwo.getDimensions(), edgeThree.getDimensions());
-  PRECICE_ASSERT(getDimensions() == 3, getDimensions());
+  PRECICE_ASSERT(edgeOne.getDimensions() == 3);
 
   // Use the first and the second vertex from the first edge.
   Vertex &v0   = edgeOne.vertex(0);
@@ -63,7 +63,7 @@ Triangle::Triangle(
   } else if (e2v1 == v0) {
     _vertices[2] = &e2v0;
   } else {
-    PRECICE_ASSERT(e2v1 == v0, "Edges one and two are not connected");
+    PRECICE_ASSERT(e2v1 == v1, "Edges one and two are not connected");
     _vertices[2] = &e2v0;
   }
 }
@@ -75,9 +75,10 @@ double Triangle::getArea() const
 
 Eigen::VectorXd Triangle::computeNormal() const
 {
-  return (vertex(1).getCoords() - vertex(0).getCoords())
-      .cross(vertex(2).getCoords() - vertex(0).getCoords())
-      .normalized();
+  PRECICE_ASSERT(getDimensions() == 3);
+  Eigen::Vector3d v01{vertex(1).getCoords() - vertex(0).getCoords()};
+  Eigen::Vector3d v02{vertex(2).getCoords() - vertex(0).getCoords()};
+  return v01.cross(v02).normalized();
 }
 
 int Triangle::getDimensions() const

@@ -135,10 +135,10 @@ public:
    * @param[in] vertexTwo Reference to second Vertex defining the Triangle.
    * @param[in] vertexThree Reference to thrid Vertex defining the Triangle.
    */
-  Triangle &createUniqueTriangle(
-      Edge &edgeOne,
-      Edge &edgeTwo,
-      Edge &edgeThree);
+  Triangle &createTriangle(
+      Vertex &vertexOne,
+      Vertex &vertexTwo,
+      Vertex &vertexThree);
 
   PtrData &createData(const std::string &name,
                       int                dimension);
