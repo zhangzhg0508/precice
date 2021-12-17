@@ -46,6 +46,12 @@ public:
       Edge &     edgeThree,
       TriangleID id);
 
+  Triangle(
+      Vertex &     vertexOne,
+      Vertex &     vertexTwo,
+      Vertex &     vertexThree,
+      TriangleID id);
+
   /// Returns dimensionalty of space the triangle is embedded in.
   int getDimensions() const;
 
@@ -66,12 +72,6 @@ public:
    * is determined on construction of the triangle.
    */
   const Vertex &vertex(int i) const;
-
-  /// Returns triangle edge with index 0, 1 or 2.
-  Edge &edge(int i);
-
-  /// Returns const triangle edge with index 0, 1 or 2.
-  const Edge &edge(int i) const;
 
   ///@name Iterators
   ///@{
@@ -124,10 +124,7 @@ public:
 
 private:
   /// Edges defining the triangle.
-  std::array<Edge *, 3> _edges;
-
-  /// Decider for choosing unique vertices from _edges.
-  std::array<bool, 3> _vertexMap;
+  std::array<Vertex *, 3> _vertices;
 
   /// ID of the triangle.
   TriangleID _id;
@@ -138,23 +135,13 @@ private:
 inline Vertex &Triangle::vertex(int i)
 {
   PRECICE_ASSERT((i >= 0) && (i < 3), i);
-  return edge(i).vertex(_vertexMap[i]);
+  return *_vertices[i];
 }
 
 inline const Vertex &Triangle::vertex(int i) const
 {
   PRECICE_ASSERT((i >= 0) && (i < 3), i);
-  return edge(i).vertex(_vertexMap[i]);
-}
-
-inline Edge &Triangle::edge(int i)
-{
-  return *_edges[i];
-}
-
-inline const Edge &Triangle::edge(int i) const
-{
-  return *_edges[i];
+  return *_vertices[i];
 }
 
 inline Triangle::iterator Triangle::begin()

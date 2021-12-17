@@ -128,6 +128,18 @@ public:
       Edge &edgeTwo,
       Edge &edgeThree);
 
+  /**
+   * @brief Creates and initializes an Triangle object or returns an already existing one.
+   *
+   * @param[in] vertexOne Reference to first Vertex defining the Triangle.
+   * @param[in] vertexTwo Reference to second Vertex defining the Triangle.
+   * @param[in] vertexThree Reference to thrid Vertex defining the Triangle.
+   */
+  Triangle &createUniqueTriangle(
+      Edge &edgeOne,
+      Edge &edgeTwo,
+      Edge &edgeThree);
+
   PtrData &createData(const std::string &name,
                       int                dimension);
 

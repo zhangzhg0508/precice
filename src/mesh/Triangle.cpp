@@ -20,11 +20,25 @@ BOOST_CONCEPT_ASSERT((boost::RandomAccessRangeConcept<Triangle>) );
 BOOST_CONCEPT_ASSERT((boost::RandomAccessRangeConcept<const Triangle>) );
 
 Triangle::Triangle(
+    Vertex &vertexOne,
+    Vertex &vertexTwo,
+    Vertex &vertexThree,
+    int     id)
+    : _vertices({&vertexOne, &vertexTwo, &vertexThree}),
+      _id(id)
+{
+  PRECICE_ASSERT(vertexOne.getDimensions() == vertexTwo.getDimensions());
+  PRECICE_ASSERT(vertexOne.getDimensions() == vertexThree.getDimensions());
+  PRECICE_ASSERT(vertexOne.getID() != vertexTwo.getID());
+  PRECICE_ASSERT(vertexOne.getID() != vertexThree.getID());
+}
+
+Triangle::Triangle(
     Edge &edgeOne,
     Edge &edgeTwo,
     Edge &edgeThree,
     int   id)
-    : _edges({&edgeOne, &edgeTwo, &edgeThree}),
+    : _vertices(),
       _id(id)
 {
   PRECICE_ASSERT(edgeOne.getDimensions() == edgeTwo.getDimensions(),
@@ -33,46 +47,25 @@ Triangle::Triangle(
                  edgeTwo.getDimensions(), edgeThree.getDimensions());
   PRECICE_ASSERT(getDimensions() == 3, getDimensions());
 
-  // Determine vertex map
-  Vertex &v0 = edge(0).vertex(0);
-  Vertex &v1 = edge(0).vertex(1);
+  // Use the first and the second vertex from the first edge.
+  Vertex &v0   = edgeOne.vertex(0);
+  Vertex &v1   = edgeOne.vertex(1);
+  _vertices[0] = &v0;
+  _vertices[1] = &v1;
 
-  if (&edge(1).vertex(0) == &v0) {
-    _vertexMap[0] = true;
-    _vertexMap[1] = false;
-  } else if (&edge(1).vertex(1) == &v0) {
-    _vertexMap[0] = true;
-    _vertexMap[1] = true;
-  } else if (&edge(1).vertex(0) == &v1) {
-    _vertexMap[0] = false;
-    _vertexMap[1] = false;
+  // Find the third vertex using the second edge.
+  Vertex &e2v0 = edgeTwo.vertex(0);
+  Vertex &e2v1 = edgeTwo.vertex(1);
+  if (e2v0 == v0) {
+    _vertices[2] = &e2v1;
+  } else if (e2v0 == v1) {
+    _vertices[2] = &e2v1;
+  } else if (e2v1 == v0) {
+    _vertices[2] = &e2v0;
   } else {
-    PRECICE_ASSERT(&edge(1).vertex(1) == &v1);
-    _vertexMap[0] = false;
-    _vertexMap[1] = true;
+    PRECICE_ASSERT(e2v1 == v0, "Edges one and two are not connected");
+    _vertices[2] = &e2v0;
   }
-
-  if (_vertexMap[1] == 0) {
-    if (&edge(2).vertex(0) == &edge(1).vertex(1)) {
-      _vertexMap[2] = false;
-    } else {
-      PRECICE_ASSERT(&edge(2).vertex(1) == &edge(1).vertex(1));
-      _vertexMap[2] = true;
-    }
-  } else if (_vertexMap[1] == 1) {
-    if (&edge(2).vertex(0) == &edge(1).vertex(0)) {
-      _vertexMap[2] = false;
-    } else {
-      PRECICE_ASSERT(&edge(2).vertex(1) == &edge(1).vertex(0));
-      _vertexMap[2] = true;
-    }
-  }
-
-  PRECICE_ASSERT(
-      (&edge(0).vertex(_vertexMap[0]) != &edge(1).vertex(_vertexMap[1])) &&
-          (&edge(0).vertex(_vertexMap[0]) != &edge(2).vertex(_vertexMap[2])) &&
-          (&edge(1).vertex(_vertexMap[1]) != &edge(2).vertex(_vertexMap[2])),
-      "Triangle vertices are not unique!");
 }
 
 double Triangle::getArea() const
@@ -82,20 +75,19 @@ double Triangle::getArea() const
 
 Eigen::VectorXd Triangle::computeNormal() const
 {
-  Eigen::Vector3d vectorA = edge(1).getCenter() - edge(0).getCenter();
-  Eigen::Vector3d vectorB = edge(2).getCenter() - edge(0).getCenter();
-  // Compute cross-product of vector A and vector B
-  return vectorA.cross(vectorB).normalized();
+  return (vertex(1).getCoords() - vertex(0).getCoords())
+      .cross(vertex(2).getCoords() - vertex(0).getCoords())
+      .normalized();
 }
 
 int Triangle::getDimensions() const
 {
-  return _edges[0]->getDimensions();
+  return _vertices[0]->getDimensions();
 }
 
 const Eigen::VectorXd Triangle::getCenter() const
 {
-  return (_edges[0]->getCenter() + _edges[1]->getCenter() + _edges[2]->getCenter()) / 3.0;
+  return (vertex(0).getCoords() + vertex(1).getCoords() + vertex(2).getCoords()) / 3.0;
 }
 
 double Triangle::getEnclosingRadius() const
@@ -108,8 +100,8 @@ double Triangle::getEnclosingRadius() const
 
 bool Triangle::operator==(const Triangle &other) const
 {
-  return std::is_permutation(_edges.begin(), _edges.end(), other._edges.begin(),
-                             [](const Edge *e1, const Edge *e2) { return *e1 == *e2; });
+  return std::is_permutation(_vertices.begin(), _vertices.end(), other._vertices.begin(),
+                             [](const Vertex *u, const Vertex *v) { return *u == *v; });
 }
 
 bool Triangle::operator!=(const Triangle &other) const
