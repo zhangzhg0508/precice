@@ -175,10 +175,10 @@ target_sources(precice
     src/mapping/Mapping.hpp
     src/mapping/NearestNeighborBaseMapping.cpp
     src/mapping/NearestNeighborBaseMapping.hpp
-    src/mapping/NearestNeighborMapping.cpp
-    src/mapping/NearestNeighborMapping.hpp
     src/mapping/NearestNeighborGradientMapping.cpp
     src/mapping/NearestNeighborGradientMapping.hpp
+    src/mapping/NearestNeighborMapping.cpp
+    src/mapping/NearestNeighborMapping.hpp
     src/mapping/NearestProjectionMapping.cpp
     src/mapping/NearestProjectionMapping.hpp
     src/mapping/PetRadialBasisFctMapping.hpp
@@ -236,6 +236,7 @@ target_sources(precice
     src/precice/config/SharedPointer.hpp
     src/precice/config/SolverInterfaceConfiguration.cpp
     src/precice/config/SolverInterfaceConfiguration.hpp
+    src/precice/exceptions.hpp
     src/precice/impl/CommonErrorMessages.hpp
     src/precice/impl/DataContext.cpp
     src/precice/impl/DataContext.hpp
@@ -320,5 +321,6 @@ target_sources(precice
 set_property(TARGET precice PROPERTY PUBLIC_HEADER
     src/precice/SolverInterface.hpp
     src/precice/Tooling.hpp
+    src/precice/exceptions.hpp
     src/precice/types.hpp
     )
